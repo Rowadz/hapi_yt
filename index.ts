@@ -1,5 +1,5 @@
 import * as Hapi from '@hapi/hapi';
-import { Server, ResponseToolkit } from 'hapi';
+import { Server, ResponseToolkit, Request } from 'hapi';
 import { initDb } from './db';
 
 const init = async () => {
