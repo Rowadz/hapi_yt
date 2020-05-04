@@ -1,7 +1,4 @@
-'use strict';
-
 import * as Hapi from '@hapi/hapi';
-import { Server } from 'hapi';
 
 const init = async () => {
   const server = Hapi.server({
