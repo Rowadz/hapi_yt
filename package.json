@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^19.1.1"
+    "@hapi/hapi": "^19.1.1",
+    "@types/node": "^13.13.4",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.2.0",
+    "typeorm": "^0.2.24"
   },
   "devDependencies": {
     "@types/hapi": "^18.0.3",
