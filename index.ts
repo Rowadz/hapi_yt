@@ -1,5 +1,6 @@
 import * as Hapi from '@hapi/hapi';
 import { Server, ResponseToolkit } from 'hapi';
+import { initDb } from './db';
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -17,7 +18,7 @@ const init = async () => {
       return { msg: 'hello world' };
     },
   });
-
+  await initDb();
   await server.start();
   console.log('Server running on %s', server.info.uri);
 };
