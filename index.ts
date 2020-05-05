@@ -1,6 +1,8 @@
 import * as Hapi from '@hapi/hapi';
 import { Server, ResponseToolkit, Request } from 'hapi';
 import { initDb } from './db';
+import 'colors';
+import { get } from 'node-emoji';
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -18,9 +20,15 @@ const init = async () => {
       return { msg: 'hello world' };
     },
   });
-  await initDb();
+  await initDb().then(() =>
+    console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'))
+  );
   await server.start();
-  console.log(`Server running on ${server.info.uri}`);
+  console.log(
+    get('rocket'),
+    `Server running on ${server.info.uri}`.green,
+    get('rocket')
+  );
 };
 
 process.on('unhandledRejection', (err) => {
