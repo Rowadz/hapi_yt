@@ -10,6 +10,11 @@ import { UsersEntity } from './users.entity';
 
 @Entity({ name: 'posts' })
 export class PostsEntity extends SharedProp {
+  constructor(title: string, body: string) {
+    super();
+    this.title = title;
+    this.body = body;
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
