@@ -24,5 +24,5 @@ export const fakePosts = async (con: Connection, amount: number = 50) => {
     }
   }
   const emoji = get('white_check_mark');
-  console.log(emoji, `Created ${amount} users`.magenta.bold, emoji);
+  console.log(emoji, `Created ${amount} posts`.magenta.bold, emoji);
 };
