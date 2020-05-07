@@ -16,6 +16,9 @@ export class UsersEntity extends SharedProp {
   @Column({ name: 'birth_of_date', nullable: true })
   birthOfDate: Date;
 
+  @Column({ unique: true, nullable: false })
+  email: string;
+
   @Column({ default: 'user' })
   type: 'admin' | 'user';
 
