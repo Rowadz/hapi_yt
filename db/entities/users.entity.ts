@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { SharedProp } from './sharedProp.entity';
+import { PostsEntity } from './posts.entites';
 
 @Entity({ name: 'users' })
 export class UsersEntity extends SharedProp {
@@ -17,6 +18,9 @@ export class UsersEntity extends SharedProp {
 
   @Column({ default: 'user' })
   type: 'admin' | 'user';
+
+  @OneToMany(() => PostsEntity, (post: PostsEntity) => post.user)
+  posts: Array<PostsEntity>;
 }
 
 /**
