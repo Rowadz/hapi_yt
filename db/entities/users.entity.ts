@@ -29,7 +29,7 @@ export class UsersEntity extends SharedProp {
   @Column({ name: 'last_name', nullable: false })
   lastName: string;
 
-  @Column({ name: 'birth_of_date', nullable: true })
+  @Column({ name: 'birth_of_date', nullable: true, type: 'date' })
   birthOfDate: Date;
 
   @Column({ unique: true, nullable: false })
