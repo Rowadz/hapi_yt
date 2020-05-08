@@ -15,8 +15,8 @@ export const fakeUsers = async (con: Connection, amount: number = 50) => {
     const u: Partial<UsersEntity> = new UsersEntity(
       firstName,
       lastName,
-      birthOfDate,
       email,
+      birthOfDate,
       type
     );
     await userRepo.save<Partial<UsersEntity>>(u);
