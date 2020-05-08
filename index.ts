@@ -3,8 +3,9 @@ import { Server, ResponseToolkit, Request } from 'hapi';
 import { initDb } from './db';
 import 'colors';
 import { get } from 'node-emoji';
-import { userController } from './controllers';
+import { userController, postsController } from './controllers';
 import { Connection } from 'typeorm';
+
 const init = async () => {
   const server: Server = Hapi.server({
     port: 3000,
@@ -23,7 +24,7 @@ const init = async () => {
   });
   const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
-  server.route(userController(con));
+  server.route([...userController(con), ...postsController(con)]);
   await server.start();
   console.log(
     get('rocket'),
