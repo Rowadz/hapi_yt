@@ -59,7 +59,7 @@ export const userController = (con: Connection): Array<ServerRoute> => {
             firstName: string().required().max(250).min(3),
             lastName: string().required().max(250).min(3),
             email: string().required().max(250).min(4),
-            birthOfDate: date().optional(),
+            birthOfDate: date().optional().min('1950-01-01').max('2010-01-01'),
           }) as any,
           failAction: (request, h, err) => {
             throw err;
