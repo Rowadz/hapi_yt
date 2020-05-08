@@ -1,6 +1,7 @@
 import { Connection, Repository } from 'typeorm';
 import { UsersEntity } from '../../db/entities';
 import { ResponseToolkit, ServerRoute, Request } from 'hapi';
+import { string, object, date } from '@hapi/joi';
 
 export const userController = (con: Connection): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
@@ -50,6 +51,23 @@ export const userController = (con: Connection): Array<ServerRoute> => {
           birthOfDate
         );
         return userRepo.save<Partial<UsersEntity>>(u);
+      },
+      options: {
+        auth: false,
+        validate: {
+          payload: object({
+            firstName: string().required().max(250).min(3),
+            lastName: string().required().max(250).min(3),
+            email: string().required().max(250).min(4),
+            birthOfDate: date().optional(),
+          }) as any,
+          failAction: (request, h, err) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false,
+          },
+        },
       },
     },
     {
