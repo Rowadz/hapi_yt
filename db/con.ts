@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
 import { UsersEntity, PostsEntity } from './entities';
-import { fakeUsers, fakePosts } from './fakingDate';
+import { fakeUsers, fakePosts } from './fakingData';
 import 'colors';
 
 export const initDb = async (): Promise<Connection> => {
