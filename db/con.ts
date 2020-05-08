@@ -12,6 +12,8 @@ export const initDb = async (): Promise<Connection> => {
     // this will be created relatvie to the path where you call this function
     database: './hapi.db',
     entities,
+    logger: 'advanced-console',
+    logging: ['error'],
   });
   await con.synchronize(true);
   entities.forEach((entity) => console.log(`Created ${entity.name}`.blue));
