@@ -8,8 +8,25 @@ export const userController = (con: Connection): Array<ServerRoute> => {
     {
       method: 'GET',
       path: '/users',
-      handler: (request: Request, h: ResponseToolkit, err?: Error) =>
-        userRepo.find(),
+      handler: async ({ query }: Request, h: ResponseToolkit, err?: Error) => {
+        const { perPage, page } = query;
+        let realPage: number;
+        let realTake: number;
+        if (perPage) realTake = +perPage;
+        else realTake = 10;
+        if (page) realPage = +page === 1 ? 0 : (+page - 1) * realTake;
+        else realPage = 0;
+
+        return {
+          data: await userRepo.find({ take: realTake, skip: realPage }),
+          perPage: realTake,
+          page: +page || 1,
+          next: `http://localhost:3000/users?perPage=${realTake}&page=${page}`,
+          prev: `http://localhost:3000/users?perPage=${realTake}&page=${
+            +page - 1
+          }`,
+        };
+      },
     },
     {
       method: 'GET',
