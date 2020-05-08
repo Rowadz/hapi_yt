@@ -2,7 +2,7 @@ import { Connection, Repository } from 'typeorm';
 import { UsersEntity } from '../../db/entities';
 import { ResponseToolkit, ServerRoute, Request } from 'hapi';
 
-export const UserController = (con: Connection): Array<ServerRoute> => {
+export const userController = (con: Connection): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
   return [
     {

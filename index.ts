@@ -3,7 +3,7 @@ import { Server, ResponseToolkit, Request } from 'hapi';
 import { initDb } from './db';
 import 'colors';
 import { get } from 'node-emoji';
-import { UserController } from './controllers';
+import { userController } from './controllers';
 import { Connection } from 'typeorm';
 const init = async () => {
   const server: Server = Hapi.server({
@@ -23,7 +23,7 @@ const init = async () => {
   });
   const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
-  server.route(UserController(con));
+  server.route(userController(con));
   await server.start();
   console.log(
     get('rocket'),
