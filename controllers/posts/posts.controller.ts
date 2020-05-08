@@ -9,7 +9,7 @@ export const postsController = (con: Connection): Array<ServerRoute> => {
       method: 'GET',
       path: '/posts',
       handler: (request: Request, h: ResponseToolkit, err?: Error) =>
-        postRepo.find(),
+        postRepo.find({ relations: ['user'] }),
     },
     {
       method: 'GET',
