@@ -33,16 +33,17 @@ export const userController = (con: Connection): Array<ServerRoute> => {
           Object.keys(q)
             .map((key) => `${key}=${q[key]}`)
             .join('&');
+        const qp: string = getQuery().length === 0 ? '' : `&${getQuery()}`;
         return {
           data: await userRepo.find(findOptions),
           perPage: realTake,
           page: +page || 1,
           next: `http://localhost:3000/users?perPage=${realTake}&page=${
             +page + 1
-          }&${getQuery()}`,
+          }${qp}`,
           prev: `http://localhost:3000/users?perPage=${realTake}&page=${
             +page - 1
-          }&${getQuery()}`,
+          }${qp}`,
         };
       },
     },
