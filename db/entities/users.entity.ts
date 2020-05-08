@@ -9,9 +9,9 @@ export class UsersEntity extends SharedProp {
   constructor(
     firstName: string,
     lastName: string,
-    birthOfDate: Date,
     email: string,
-    type: UserType
+    birthOfDate?: Date,
+    type?: UserType
   ) {
     super();
     this.firstName = firstName;
