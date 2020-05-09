@@ -10,11 +10,7 @@ export const authController = (con: Connection): Array<ServerRoute> => {
     {
       method: 'POST',
       path: '/register',
-      handler: async (
-        { payload }: Request,
-        h: ResponseToolkit,
-        err?: Error
-      ) => {
+      handler: async ({ payload }: Request) => {
         const {
           firstName,
           lastName,
