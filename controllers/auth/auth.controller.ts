@@ -12,29 +12,34 @@ export const authController = (con: Connection): Array<ServerRoute> => {
       method: 'POST',
       path: '/register',
       handler: async ({ payload }: Request) => {
-        const {
-          firstName,
-          lastName,
-          email,
-          password,
-          birthOfDate,
-        } = payload as Partial<UsersEntity>;
-        const salt = await genSalt();
-        const u = new UsersEntity(
-          firstName,
-          lastName,
-          email,
-          password,
-          salt,
-          birthOfDate
-        );
-        await userRepo.save(u);
-        delete u.password;
-        delete u.salt;
-        return {
-          user: u,
-          accessToken: sign(u, 'getMeFromEnvFile'),
-        };
+        try {
+          const {
+            firstName,
+            lastName,
+            email,
+            password,
+            birthOfDate,
+          } = payload as Partial<UsersEntity>;
+          const salt = await genSalt();
+          const u = new UsersEntity(
+            firstName,
+            lastName,
+            email,
+            password,
+            salt,
+            birthOfDate
+          );
+          await userRepo.save(u);
+          delete u.password;
+          delete u.salt;
+          return {
+            user: u,
+            accessToken: sign({ ...u }, 'getMeFromEnvFile'),
+          };
+        } catch (error) {
+          console.error(error);
+          return { err: 'something went wrong :(' };
+        }
       },
       options: {
         auth: false,
@@ -44,6 +49,7 @@ export const authController = (con: Connection): Array<ServerRoute> => {
             lastName: string().required().max(250).min(3),
             email: string().required().max(250).min(4),
             birthOfDate: date().optional().min('1950-01-01').max('2010-01-01'),
+            password: string().required().min(5).max(15),
           }) as any,
           failAction: (request, h, err) => {
             throw err;
