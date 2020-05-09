@@ -1,7 +1,6 @@
 import { Connection, Repository } from 'typeorm';
 import { UsersEntity } from '../../db/entities';
 import { ResponseToolkit, ServerRoute, Request } from 'hapi';
-import { string, object, date } from '@hapi/joi';
 
 export const userController = (con: Connection): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
@@ -52,41 +51,6 @@ export const userController = (con: Connection): Array<ServerRoute> => {
       path: '/users/{id}',
       handler: ({ params: { id } }: Request, h: ResponseToolkit, err?: Error) =>
         userRepo.findOne(id),
-    },
-    {
-      method: 'POST',
-      path: '/users',
-      handler: ({ payload }: Request, h: ResponseToolkit, err?: Error) => {
-        // TODO:: anyone can select the type?? no!
-        const { firstName, lastName, birthOfDate, email } = payload as Partial<
-          UsersEntity
-        >;
-
-        const u: Partial<UsersEntity> = new UsersEntity(
-          firstName,
-          lastName,
-          email,
-          birthOfDate
-        );
-        return userRepo.save<Partial<UsersEntity>>(u);
-      },
-      options: {
-        auth: false,
-        validate: {
-          payload: object({
-            firstName: string().required().max(250).min(3),
-            lastName: string().required().max(250).min(3),
-            email: string().required().max(250).min(4),
-            birthOfDate: date().optional().min('1950-01-01').max('2010-01-01'),
-          }) as any,
-          failAction: (request, h, err) => {
-            throw err;
-          },
-          options: {
-            abortEarly: false,
-          },
-        },
-      },
     },
     {
       method: 'PATCH',

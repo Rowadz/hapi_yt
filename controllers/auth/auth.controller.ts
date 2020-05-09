@@ -3,6 +3,7 @@ import { ServerRoute, ResponseToolkit, Request } from 'hapi';
 import { UsersEntity } from '../../db/entities';
 import { genSalt } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
+import { string, object, date } from '@hapi/joi';
 
 export const authController = (con: Connection): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
@@ -34,6 +35,23 @@ export const authController = (con: Connection): Array<ServerRoute> => {
           user: u,
           accessToken: sign(u, 'getMeFromEnvFile'),
         };
+      },
+      options: {
+        auth: false,
+        validate: {
+          payload: object({
+            firstName: string().required().max(250).min(3),
+            lastName: string().required().max(250).min(3),
+            email: string().required().max(250).min(4),
+            birthOfDate: date().optional().min('1950-01-01').max('2010-01-01'),
+          }) as any,
+          failAction: (request, h, err) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false,
+          },
+        },
       },
     },
   ];
