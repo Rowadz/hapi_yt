@@ -5,6 +5,8 @@ import 'colors';
 import { get } from 'node-emoji';
 import { userController, postsController } from './controllers';
 import { Connection } from 'typeorm';
+import * as HapiJWT from 'hapi-auth-jwt2';
+import { validate } from './auth';
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -12,15 +14,10 @@ const init = async () => {
     host: 'localhost',
   });
 
-  // request - the request object.
-  // h - the response toolkit the handler must call to set a response and return control back to the framework.
-  // err - an error object availble only when the method is used as a failAction value.
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: (request: Request, h: ResponseToolkit, err?: Error) => {
-      return { msg: 'hello world' };
-    },
+  await server.register(HapiJWT);
+  server.auth.strategy('jwt', 'jwt', {
+    key: 'NeverShareYourSecret', // Never Share your secret key
+    validate, // validate function defined above
   });
   const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
