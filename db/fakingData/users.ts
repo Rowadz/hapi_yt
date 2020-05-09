@@ -3,6 +3,7 @@ import { Connection, Repository } from 'typeorm';
 import { UsersEntity, UserType } from '../entities';
 import 'colors';
 import { get } from 'node-emoji';
+import { genSalt, hash } from 'bcrypt';
 
 export const fakeUsers = async (con: Connection, amount: number = 50) => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
@@ -12,10 +13,14 @@ export const fakeUsers = async (con: Connection, amount: number = 50) => {
     const birthOfDate = date.past();
     const email = internet.email();
     const type: UserType = random.arrayElement(['admin', 'user']);
+    const salt = await genSalt();
+    const password = await hash('secret', salt);
     const u: Partial<UsersEntity> = new UsersEntity(
       firstName,
       lastName,
       email,
+      password,
+      salt,
       birthOfDate,
       type
     );
