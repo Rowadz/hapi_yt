@@ -3,7 +3,7 @@ import { Server, ResponseToolkit, Request } from 'hapi';
 import { initDb } from './db';
 import 'colors';
 import { get } from 'node-emoji';
-import { userController, postsController } from './controllers';
+import { userController, postsController, authController } from './controllers';
 import { Connection } from 'typeorm';
 import * as HapiJWT from 'hapi-auth-jwt2';
 import { validate } from './auth';
@@ -21,7 +21,11 @@ const init = async () => {
   });
   const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
-  server.route([...userController(con), ...postsController(con)]);
+  server.route([
+    ...userController(con),
+    ...postsController(con),
+    ...authController(con),
+  ]);
   await server.start();
   console.log(
     get('rocket'),
