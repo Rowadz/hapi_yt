@@ -11,14 +11,16 @@ export const authController = (con: Connection): Array<ServerRoute> => {
     {
       method: 'POST',
       path: '/login',
-      async handler({ payload, auth }: Request, h: ResponseToolkit) {
+      async handler({ auth: { credentials } }: Request) {
         return {
-          ...auth.credentials,
-          accessToken: sign({ ...auth.credentials }, 'getMeFromEnvFile'),
+          ...credentials,
+          accessToken: sign({ ...credentials }, 'getMeFromEnvFile'),
         };
       },
       options: {
-        auth: { strategy: 'simple' },
+        auth: {
+          strategy: 'simple',
+        },
       },
     },
     {
