@@ -1,12 +1,11 @@
 import * as Hapi from '@hapi/hapi';
-import { Server, ResponseToolkit, Request } from 'hapi';
+import { Server, ServerRoute } from '@hapi/hapi';
 import { initDb } from './db';
 import 'colors';
 import { get } from 'node-emoji';
 import { userController, postsController, authController } from './controllers';
 import { Connection } from 'typeorm';
-import * as HapiJWT from 'hapi-auth-jwt2';
-import { validate } from './auth';
+import { validateJWT, validateBasic } from './auth';
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -14,10 +13,13 @@ const init = async () => {
     host: 'localhost',
   });
 
-  await server.register(HapiJWT);
+  await server.register(require('hapi-auth-jwt2'));
+  await server.register(require('@hapi/basic'));
+
+  server.auth.strategy('simple', 'basic', { validate: validateBasic });
   server.auth.strategy('jwt', 'jwt', {
     key: 'NeverShareYourSecret', // Never Share your secret key
-    validate, // validate function defined above
+    validate: validateJWT, // validate function defined above
   });
   const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
@@ -25,7 +27,7 @@ const init = async () => {
     ...userController(con),
     ...postsController(con),
     ...authController(con),
-  ]);
+  ] as Array<ServerRoute>);
   await server.start();
   console.log(
     get('rocket'),
