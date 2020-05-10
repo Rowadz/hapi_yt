@@ -24,7 +24,7 @@ export const authController = (con: Connection): Array<ServerRoute> => {
     {
       method: 'POST',
       path: '/register',
-      handler: async ({ payload }: Request) => {
+      async handler({ payload }: Request) {
         try {
           const {
             firstName,
@@ -64,7 +64,7 @@ export const authController = (con: Connection): Array<ServerRoute> => {
             birthOfDate: date().optional().min('1950-01-01').max('2010-01-01'),
             password: string().required().min(5).max(15),
           }) as any,
-          failAction: (request, h, err) => {
+          failAction(request: Request, h: ResponseToolkit, err: Error) {
             throw err;
           },
           options: {
