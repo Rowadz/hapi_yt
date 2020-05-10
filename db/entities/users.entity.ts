@@ -53,6 +53,8 @@ export class UsersEntity extends SharedProp {
     onUpdate: 'CASCADE',
   })
   posts: Array<PostsEntity>;
+
+  accessToken?: string;
 }
 
 /**

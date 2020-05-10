@@ -15,13 +15,13 @@ const init = async () => {
 
   await server.register(require('hapi-auth-jwt2'));
   await server.register(require('@hapi/basic'));
+  const con: Connection = await initDb();
 
-  server.auth.strategy('simple', 'basic', { validate: validateBasic });
+  server.auth.strategy('simple', 'basic', { validate: validateBasic(con) });
   server.auth.strategy('jwt', 'jwt', {
     key: 'getMeFromEnvFile', // Never Share your secret key
-    validate: validateJWT, // validate function defined above
+    validate: validateJWT(con), // validate function defined above
   });
-  const con: Connection = await initDb();
   console.log(get('dvd'), 'DB init -> Done!'.green, get('dvd'));
   server.route([
     ...userController(con),

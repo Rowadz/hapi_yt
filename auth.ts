@@ -1,35 +1,39 @@
 import { Request, ResponseToolkit } from '@hapi/hapi';
+import { Connection, Repository } from 'typeorm';
+import { UsersEntity } from './db/entities';
+import { compare, hash, genSalt } from 'bcrypt';
 
-export const validateJWT = async (
-  decoded: object,
-  request: Request,
-  h: ResponseToolkit
-) => {
-  // do your checks to see if the person is valid
-  console.log(decoded);
-  //   if (!people[decoded.id]) {
-  //     return { isValid: false };
-  //   } else {
-  //     return { isValid: true };
-  //   }
+export const validateJWT = (con: Connection) => {
+  return async (
+    { id }: Partial<UsersEntity>,
+    request: Request,
+    h: ResponseToolkit
+  ) => {
+    const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
+    const user: UsersEntity = await userRepo.findOne(id);
+    if (!user) {
+      return { isValid: false };
+    }
+    return { isValid: true };
+  };
 };
 
-export const validateBasic = async (
-  request: Request,
-  username: string,
-  password: string,
-  h: ResponseToolkit
-) => {
-  console.log(username, password);
-
-  // const user = users[username];
-  // if (!user) {
-  // return { credentials: null, isValid: false };
-  // }
-
-  // const isValid = await Bcrypt.compare(password, user.password);
-  // const credentials = { id: user.id, name: user.name };
-
-  // credentials - a credentials object passed back to the application in `request.auth.credentials`.
-  return { isValid: true, credentials: { nidce: 'true' } };
+export const validateBasic = (con: Connection) => {
+  return async (
+    request: Request,
+    username: string,
+    password: string,
+    h: ResponseToolkit
+  ) => {
+    const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
+    const user: UsersEntity = await userRepo.findOne({ email: username });
+    if (!user) {
+      return { credentials: null, isValid: false };
+    }
+    const isValid = (await hash(password, user.salt)) === user.password;
+    delete user.password;
+    delete user.salt;
+    // credentials - a credentials object passed back to the application in `request.auth.credentials`.
+    return { isValid: isValid, credentials: user };
+  };
 };
