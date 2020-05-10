@@ -1,6 +1,6 @@
 import { Connection, Repository } from 'typeorm';
 import { ServerRoute, ResponseToolkit, Request } from 'hapi';
-import { PostsEntity } from '../../db/entities';
+import { PostsEntity, UsersEntity } from '../../db/entities';
 
 export const postsController = (con: Connection): Array<ServerRoute> => {
   const postRepo: Repository<PostsEntity> = con.getRepository(PostsEntity);
@@ -20,11 +20,28 @@ export const postsController = (con: Connection): Array<ServerRoute> => {
     {
       method: 'POST',
       path: '/posts',
-      handler: ({ payload }: Request, h: ResponseToolkit, err?: Error) => {
+      handler: (
+        {
+          payload,
+          auth: {
+            credentials: { user },
+          },
+        }: Request,
+        h: ResponseToolkit,
+        err?: Error
+      ) => {
         const { title, body } = payload as Partial<PostsEntity>;
-        const p: Partial<PostsEntity> = new PostsEntity(title, body);
-        // TODO:: get the user form the jwt token
+        const p: Partial<PostsEntity> = new PostsEntity(
+          title,
+          body,
+          (user as UsersEntity).id
+        );
         return postRepo.save<Partial<PostsEntity>>(p);
+      },
+      options: {
+        auth: {
+          strategy: 'jwt',
+        },
       },
     },
     {

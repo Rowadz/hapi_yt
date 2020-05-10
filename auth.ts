@@ -14,7 +14,7 @@ export const validateJWT = (con: Connection) => {
     if (!user) {
       return { isValid: false };
     }
-    return { isValid: true };
+    return { isValid: true, credentials: { user } };
   };
 };
 
