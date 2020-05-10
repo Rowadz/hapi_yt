@@ -45,6 +45,11 @@ export const userController = (con: Connection): Array<ServerRoute> => {
           }${qp}`,
         };
       },
+      options: {
+        auth: {
+          strategy: 'jwt',
+        },
+      },
     },
     {
       method: 'GET',

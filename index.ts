@@ -18,7 +18,7 @@ const init = async () => {
 
   server.auth.strategy('simple', 'basic', { validate: validateBasic });
   server.auth.strategy('jwt', 'jwt', {
-    key: 'NeverShareYourSecret', // Never Share your secret key
+    key: 'getMeFromEnvFile', // Never Share your secret key
     validate: validateJWT, // validate function defined above
   });
   const con: Connection = await initDb();
