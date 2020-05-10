@@ -1,13 +1,24 @@
 import { Connection, Repository } from 'typeorm';
-import { ServerRoute, ResponseToolkit, Request } from 'hapi';
 import { UsersEntity } from '../../db/entities';
 import { genSalt } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { string, object, date } from '@hapi/joi';
+import { ServerRoute, Request, ResponseToolkit } from '@hapi/hapi';
 
 export const authController = (con: Connection): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
   return [
+    {
+      method: 'POST',
+      path: '/login',
+      async handler({ payload, auth }: Request, h: ResponseToolkit) {
+        console.log(auth.credentials);
+        return payload;
+      },
+      options: {
+        auth: { strategy: 'simple' },
+      },
+    },
     {
       method: 'POST',
       path: '/register',
